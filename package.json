@@ -1,0 +1,16 @@
+{
+  "name": "@agaroot/action-restrict-pr-label",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Restrict pull request labels based on the combination of the base and head branches",
+  "homepage": "https://github.com/agaroot-technologies/action-restrict-pr-label",
+  "bugs": {
+    "url": "https://github.com/agaroot-technologies/action-restrict-pr-label/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agaroot-technologies/action-restrict-pr-label.git"
+  },
+  "license": "MIT",
+  "packageManager": "pnpm@8.9.2"
+}
