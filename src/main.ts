@@ -26,9 +26,10 @@ export const main = async ({
 
   const repositoryLabels = await getRepositoryLabels(octokit);
   const needLabels = rules.flatMap(rule => rule.labels);
-  const missingLabels = needLabels.filter(label => !repositoryLabels.includes(label));
-  if (0 < missingLabels.length) {
-    core.setFailed(`Please add the following labels: ${missingLabels.join(', ')}`);
+  const missingLabels = new Set(needLabels.filter(label => !repositoryLabels.includes(label)));
+  if (0 < missingLabels.size) {
+    // eslint-disable-next-line unicorn/prefer-spread
+    core.setFailed(`Please add the following labels: ${Array.from(missingLabels).join(', ')}`);
     return;
   }
 

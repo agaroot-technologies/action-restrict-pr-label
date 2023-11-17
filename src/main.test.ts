@@ -146,14 +146,17 @@ describe('main', () => {
   it('Should fail - missing labels', async () => {
     const base = 'main';
     const head = 'development';
-    const rules = [{ base: 'main', head: 'development', labels: ['label'] }];
+    const rules = [
+      { base: 'main', head: 'development', labels: ['label1', 'label2'] },
+      { base: 'main', head: 'development', labels: ['label2', 'label3'] },
+    ];
 
     process.env['GITHUB_TOKEN'] = 'GITHUB_TOKEN';
     jest.mocked(getRepositoryLabels).mockResolvedValue([]);
 
     await main({ base, head, rules });
 
-    expect(core.setFailed).toHaveBeenCalledWith('Please add the following labels: label');
+    expect(core.setFailed).toHaveBeenCalledWith('Please add the following labels: label1, label2, label3');
   });
 
   it('Should warn - no rule', async () => {
