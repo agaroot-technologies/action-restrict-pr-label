@@ -1,9 +1,11 @@
 import * as core from '@actions/core';
 
-import { getRepositoryLabels } from './api';
+import { getPullRequestLabels, getRepositoryLabels, setPullRequestLabels } from './api';
+import { getPullRequestEvent } from './input';
 import { main } from './main';
 
 jest.mock('./api');
+jest.mock('./input');
 
 describe('main', () => {
   const env = process.env;
@@ -17,6 +19,118 @@ describe('main', () => {
 
   afterEach(() => {
     process.env = env;
+  });
+
+  it('Should pass - simple rule', async () => {
+    const base = 'main';
+    const head = 'development';
+    const rules = [{ base: 'main', head: 'development', labels: ['label'] }];
+
+    process.env['GITHUB_TOKEN'] = 'GITHUB_TOKEN';
+    jest.mocked(getRepositoryLabels).mockResolvedValue(['label']);
+    jest.mocked(getPullRequestEvent).mockReturnValue({ number: 1 });
+    jest.mocked(getPullRequestLabels).mockResolvedValue([]);
+
+    await main({ base, head, rules });
+
+    expect(core.warning).not.toHaveBeenCalled();
+    expect(core.setFailed).not.toHaveBeenCalled();
+    expect(setPullRequestLabels).toHaveBeenCalledTimes(1);
+    expect(setPullRequestLabels).toHaveBeenCalledWith(expect.any(Object), 1, ['label']);
+  });
+
+  it('Should pass - glob pattern rule', async () => {
+    const base = 'main';
+    const head = 'feature/1';
+    const rules = [{ base: 'main', head: 'feature/*', labels: ['label'] }];
+
+    process.env['GITHUB_TOKEN'] = 'GITHUB_TOKEN';
+    jest.mocked(getRepositoryLabels).mockResolvedValue(['label']);
+    jest.mocked(getPullRequestEvent).mockReturnValue({ number: 1 });
+    jest.mocked(getPullRequestLabels).mockResolvedValue([]);
+
+    await main({ base, head, rules });
+
+    expect(core.warning).not.toHaveBeenCalled();
+    expect(core.setFailed).not.toHaveBeenCalled();
+    expect(setPullRequestLabels).toHaveBeenCalledTimes(1);
+    expect(setPullRequestLabels).toHaveBeenCalledWith(expect.any(Object), 1, ['label']);
+  });
+
+  it('Should pass - merge labels', async () => {
+    const base = 'main';
+    const head = 'development';
+    const rules = [{ base: 'main', head: 'development', labels: ['label1'] }];
+
+    process.env['GITHUB_TOKEN'] = 'GITHUB_TOKEN';
+    jest.mocked(getRepositoryLabels).mockResolvedValue(['label1', 'label2']);
+    jest.mocked(getPullRequestEvent).mockReturnValue({ number: 1 });
+    jest.mocked(getPullRequestLabels).mockResolvedValue(['label2']);
+
+    await main({ base, head, rules });
+
+    expect(core.warning).not.toHaveBeenCalled();
+    expect(core.setFailed).not.toHaveBeenCalled();
+    expect(setPullRequestLabels).toHaveBeenCalledTimes(1);
+    expect(setPullRequestLabels).toHaveBeenCalledWith(expect.any(Object), 1, ['label1', 'label2']);
+  });
+
+  it('Should pass - duplicate labels', async () => {
+    const base = 'main';
+    const head = 'development';
+    const rules = [{ base: 'main', head: 'development', labels: ['label1', 'label2'] }];
+
+    process.env['GITHUB_TOKEN'] = 'GITHUB_TOKEN';
+    jest.mocked(getRepositoryLabels).mockResolvedValue(['label1', 'label2']);
+    jest.mocked(getPullRequestEvent).mockReturnValue({ number: 1 });
+    jest.mocked(getPullRequestLabels).mockResolvedValue(['label2']);
+
+    await main({ base, head, rules });
+
+    expect(core.warning).not.toHaveBeenCalled();
+    expect(core.setFailed).not.toHaveBeenCalled();
+    expect(setPullRequestLabels).toHaveBeenCalledTimes(1);
+    expect(setPullRequestLabels).toHaveBeenCalledWith(expect.any(Object), 1, ['label1', 'label2']);
+  });
+
+  describe('Should pass - multiple rules', () => {
+    const base = 'main';
+    const rules = [
+      { base: 'main', head: 'development', labels: ['label1', 'label2'] },
+      { base: 'main', head: 'feature/*', labels: ['label3', 'label4'] },
+    ];
+
+    it('Should pass - development', async () => {
+      const head = 'development';
+
+      process.env['GITHUB_TOKEN'] = 'GITHUB_TOKEN';
+      jest.mocked(getRepositoryLabels).mockResolvedValue(['label1', 'label2', 'label3', 'label4']);
+      jest.mocked(getPullRequestEvent).mockReturnValue({ number: 1 });
+      jest.mocked(getPullRequestLabels).mockResolvedValue(['label1', 'label3']);
+
+      await main({ base, head, rules });
+
+      expect(core.warning).not.toHaveBeenCalled();
+      expect(core.setFailed).not.toHaveBeenCalled();
+      expect(setPullRequestLabels).toHaveBeenCalledTimes(1);
+      expect(setPullRequestLabels).toHaveBeenCalledWith(expect.any(Object), 1, ['label1', 'label2', 'label3']);
+    });
+
+    it('Should pass - feature/*', async () => {
+      const head = 'feature/1';
+
+      process.env['GITHUB_TOKEN'] = 'GITHUB_TOKEN';
+      jest.mocked(getRepositoryLabels).mockResolvedValue(['label1', 'label2', 'label3', 'label4']);
+      jest.mocked(getPullRequestEvent).mockReturnValue({ number: 1 });
+      jest.mocked(getPullRequestLabels).mockResolvedValue(['label2', 'label4']);
+
+      await main({ base, head, rules });
+
+      expect(core.warning).not.toHaveBeenCalled();
+      expect(core.setFailed).not.toHaveBeenCalled();
+      expect(setPullRequestLabels).toHaveBeenCalledTimes(1);
+      expect(setPullRequestLabels).toHaveBeenCalledWith(expect.any(Object), 1, ['label3', 'label4', 'label2']);
+    });
   });
 
   it('Should warn - no rule', async () => {

@@ -2,7 +2,8 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { minimatch } from 'minimatch';
 
-import { getRepositoryLabels } from './api';
+import { getPullRequestLabels, getRepositoryLabels, setPullRequestLabels } from './api';
+import { getPullRequestEvent } from './input';
 
 import type { Rule } from './type';
 
@@ -44,9 +45,11 @@ export const main = async ({
     return;
   }
 
-  console.log({
-    base,
-    head,
-    rules,
-  });
+  const labels = new Set(rule.labels);
+  const { number: prNumber } = getPullRequestEvent();
+  const pullRequestLabels = await getPullRequestLabels(octokit, prNumber);
+  pullRequestLabels.forEach(label => labels.add(label));
+
+  // eslint-disable-next-line unicorn/prefer-spread
+  await setPullRequestLabels(octokit, prNumber, Array.from(labels));
 };
