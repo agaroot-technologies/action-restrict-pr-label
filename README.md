@@ -10,13 +10,13 @@ Restrict pull request labels based on the combination of the base and head branc
 Create a workflow file under ```.github/workflows``` directory.
 
 ```yaml
-name: Restrict head branch
+name: Restrict pr label
 on:
   pull_request_target:
     types: [opened, edited, synchronize]
 
 jobs:
-  restrict-head-branch:
+  restrict-pr-label:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
