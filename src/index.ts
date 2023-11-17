@@ -1,8 +1,10 @@
 import * as core from '@actions/core';
 
+import { getRules } from './input';
+
 (() => {
   try {
-    const rules = core.getMultilineInput('rules');
+    const rules = getRules();
     console.log(rules);
   } catch (error) {
     if (error instanceof Error) {
