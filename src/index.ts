@@ -3,9 +3,10 @@ import * as core from '@actions/core';
 import { getBaseBranchName, getHeadBranchName, getRules } from './input';
 import { main } from './main';
 
-(() => {
+// eslint-disable-next-line unicorn/prefer-top-level-await
+void (async () => {
   try {
-    main({
+    await main({
       base: getBaseBranchName(),
       head: getHeadBranchName(),
       rules: getRules(),
