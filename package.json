@@ -16,7 +16,9 @@
     "build": "ncc build src/index.ts --out dist --transpile-only --minify",
     "build:watch": "ncc build src/index.ts --out dist --transpile-only --minify --watch",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "lint:code": "eslint",
+    "lint:type": "tsc --pretty --noEmit"
   },
   "pnpm": {
     "overrides": {
