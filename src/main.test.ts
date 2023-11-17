@@ -133,6 +133,29 @@ describe('main', () => {
     });
   });
 
+  it('Should fail - missing GITHUB_TOKEN', async () => {
+    const base = 'main';
+    const head = 'development';
+    const rules = [{ base: 'main', head: 'development', labels: [] }];
+
+    await main({ base, head, rules });
+
+    expect(core.setFailed).toHaveBeenCalledWith('Please set GITHUB_TOKEN to the environment variable');
+  });
+
+  it('Should fail - missing labels', async () => {
+    const base = 'main';
+    const head = 'development';
+    const rules = [{ base: 'main', head: 'development', labels: ['label'] }];
+
+    process.env['GITHUB_TOKEN'] = 'GITHUB_TOKEN';
+    jest.mocked(getRepositoryLabels).mockResolvedValue([]);
+
+    await main({ base, head, rules });
+
+    expect(core.setFailed).toHaveBeenCalledWith('Please add the following labels: label');
+  });
+
   it('Should warn - no rule', async () => {
     const base = 'staging';
     const head = 'development';
@@ -159,28 +182,5 @@ describe('main', () => {
 
     expect(core.warning).toHaveBeenCalledTimes(1);
     expect(core.warning).toHaveBeenCalledWith(`No rule found for head branch: ${head}`);
-  });
-
-  it('Should fail - missing GITHUB_TOKEN', async () => {
-    const base = 'main';
-    const head = 'development';
-    const rules = [{ base: 'main', head: 'development', labels: [] }];
-
-    await main({ base, head, rules });
-
-    expect(core.setFailed).toHaveBeenCalledWith('Please set GITHUB_TOKEN to the environment variable');
-  });
-
-  it('Should fail - missing labels', async () => {
-    const base = 'main';
-    const head = 'development';
-    const rules = [{ base: 'main', head: 'development', labels: ['label'] }];
-
-    process.env['GITHUB_TOKEN'] = 'GITHUB_TOKEN';
-    jest.mocked(getRepositoryLabels).mockResolvedValue([]);
-
-    await main({ base, head, rules });
-
-    expect(core.setFailed).toHaveBeenCalledWith('Please add the following labels: label');
   });
 });
