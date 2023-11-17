@@ -18,7 +18,10 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "lint:code": "eslint",
-    "lint:type": "tsc --pretty --noEmit"
+    "lint:type": "tsc --pretty --noEmit",
+    "version": "changeset",
+    "version:apply": "changeset version",
+    "version:publish": "changeset tag"
   },
   "pnpm": {
     "overrides": {
@@ -33,6 +36,8 @@
   "devDependencies": {
     "@agaroot/eslint-config-common": "2.1.6",
     "@agaroot/eslint-config-jest": "2.1.1",
+    "@changesets/changelog-github": "0.4.8",
+    "@changesets/cli": "2.26.2",
     "@swc/core": "1.3.96",
     "@swc/jest": "0.2.29",
     "@tsconfig/node20": "20.1.2",
