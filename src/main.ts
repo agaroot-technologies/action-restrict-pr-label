@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
+import { minimatch } from 'minimatch';
 
 import { getRepositoryLabels } from './api';
 
@@ -16,6 +17,18 @@ export const main = async ({
   head,
   rules,
 }: MainOptions) => {
+  const matchRules = rules.filter(rule => minimatch(base, rule.base));
+  if (matchRules.length <= 0) {
+    core.warning(`No rule found for base branch: ${base}`);
+    return;
+  }
+
+  const rule = matchRules.find(rule => minimatch(head, rule.head));
+  if (!rule) {
+    core.warning(`No rule found for head branch: ${head}`);
+    return;
+  }
+
   if (!process.env['GITHUB_TOKEN']) {
     core.setFailed('Please set GITHUB_TOKEN to the environment variable');
     return;
