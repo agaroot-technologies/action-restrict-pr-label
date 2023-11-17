@@ -1,0 +1,12 @@
+name: Restrict pr label
+description: Restrict pull request labels based on the combination of the base and head branches.
+branding:
+  icon: git-pull-request
+  color: red
+runs:
+  using: node20
+  main: dist/index.js
+inputs:
+  rules:
+    description: A rule set of labels to be set based on the combination of base and head branches.
+    required: true
