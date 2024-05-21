@@ -37,7 +37,7 @@
     "@agaroot/eslint-config-common": "2.1.12",
     "@agaroot/eslint-config-jest": "2.1.2",
     "@changesets/changelog-github": "0.5.0",
-    "@changesets/cli": "2.27.2",
+    "@changesets/cli": "2.27.3",
     "@swc/core": "1.5.7",
     "@swc/jest": "0.2.36",
     "@tsconfig/node20": "20.1.4",
