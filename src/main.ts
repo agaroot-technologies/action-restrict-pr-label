@@ -25,21 +25,21 @@ export const main = async ({
   const octokit = github.getOctokit(process.env['GITHUB_TOKEN']);
 
   const repositoryLabels = await getRepositoryLabels(octokit);
-  const needLabels = rules.flatMap(rule => rule.labels);
-  const missingLabels = new Set(needLabels.filter(label => !repositoryLabels.includes(label)));
+  const needLabels = rules.flatMap((rule) => rule.labels);
+  const missingLabels = new Set(needLabels.filter((label) => !repositoryLabels.includes(label)));
   if (0 < missingLabels.size) {
     // eslint-disable-next-line unicorn/prefer-spread
     core.setFailed(`Please add the following labels: ${Array.from(missingLabels).join(', ')}`);
     return;
   }
 
-  const matchRules = rules.filter(rule => minimatch(base, rule.base));
+  const matchRules = rules.filter((rule) => minimatch(base, rule.base));
   if (matchRules.length <= 0) {
     core.warning(`No rule found for base branch: ${base}`);
     return;
   }
 
-  const rule = matchRules.find(rule => minimatch(head, rule.head));
+  const rule = matchRules.find((rule) => minimatch(head, rule.head));
   if (!rule) {
     core.warning(`No rule found for head branch: ${head}`);
     return;
@@ -48,7 +48,7 @@ export const main = async ({
   const labels = new Set(rule.labels);
   const { number: prNumber } = getPullRequestEvent();
   const pullRequestLabels = await getPullRequestLabels(octokit, prNumber);
-  pullRequestLabels.forEach(label => labels.add(label));
+  pullRequestLabels.forEach((label) => labels.add(label));
 
   // eslint-disable-next-line unicorn/prefer-spread
   await setPullRequestLabels(octokit, prNumber, Array.from(labels));

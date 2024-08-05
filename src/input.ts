@@ -12,9 +12,10 @@ export const getPullRequestEvent = (): Exclude<WebhookPayload['pull_request'], u
 };
 
 export const getBaseBranchName = (): string => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { base = {} } = getPullRequestEvent();
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
   const ref = base.ref;
 
   if (typeof ref === 'string') {
@@ -25,9 +26,10 @@ export const getBaseBranchName = (): string => {
 };
 
 export const getHeadBranchName = (): string => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { head = {} } = getPullRequestEvent();
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
   const ref = head.ref;
 
   if (typeof ref === 'string') {
@@ -47,7 +49,7 @@ export const getRules = (): Rule[] => {
       throw new Error(`Invalid rule: ${line}`);
     }
 
-    const labels = (matches[3]!.match(/\[([^\]]+)]/g) || []).map(label => label.replaceAll(/[[\]]/g, ''));
+    const labels = (matches[3]!.match(/\[([^\]]+)]/g) || []).map((label) => label.replaceAll(/[[\]]/g, ''));
     if (labels.length <= 0) {
       throw new Error(`Invalid rule: ${line}`);
     }

@@ -8,7 +8,7 @@ export const getRepositoryLabels = async (
     repo: github.context.repo.repo,
   });
 
-  return result.data.map(label => label.name);
+  return result.data.map((label) => label.name);
 };
 
 export const getPullRequestLabels = async (
@@ -21,7 +21,7 @@ export const getPullRequestLabels = async (
     pull_number: prNumber,
   });
 
-  return result.data.labels.map(label => label.name);
+  return result.data.labels.map((label) => label.name);
 };
 
 export const setPullRequestLabels = async (

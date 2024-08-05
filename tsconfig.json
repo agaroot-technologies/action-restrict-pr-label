@@ -3,7 +3,11 @@
     "@tsconfig/strictest/tsconfig.json",
     "@tsconfig/node20/tsconfig.json"
   ],
-  "include": [
-    "**/*.ts"
-  ],
+  "compilerOptions": {
+    "module": "ES2022",
+    "moduleResolution": "Bundler"
+  },
+  "exclude": [
+    "dist"
+  ]
 }
