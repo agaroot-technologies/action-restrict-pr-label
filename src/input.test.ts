@@ -14,7 +14,7 @@ describe('input', () => {
     github.context.payload = payload;
 
     inputs = {};
-    jest.spyOn(core, 'getMultilineInput').mockImplementation(name => {
+    jest.spyOn(core, 'getMultilineInput').mockImplementation((name) => {
       const value = inputs[name];
       if (!value || !Array.isArray(value)) throw new Error(`Input required and not supplied: ${name}`);
       return value;
