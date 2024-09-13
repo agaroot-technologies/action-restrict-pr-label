@@ -42,7 +42,7 @@
     "@swc/jest": "0.2.36",
     "@tsconfig/node20": "20.1.4",
     "@tsconfig/strictest": "2.0.5",
-    "@types/jest": "29.5.12",
+    "@types/jest": "29.5.13",
     "@types/node": "20.16.5",
     "@vercel/ncc": "0.38.1",
     "eslint": "8.57.0",
