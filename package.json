@@ -25,7 +25,7 @@
     "version:publish": "changeset tag"
   },
   "dependencies": {
-    "@actions/core": "1.11.0",
+    "@actions/core": "1.11.1",
     "@actions/github": "6.0.0",
     "minimatch": "10.0.1"
   },
