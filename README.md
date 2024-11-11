@@ -1,3 +1,8 @@
+> [!CAUTION]
+> The repository has been archived and will no longer be maintained.  
+> Moving forward, maintenance will be conducted in the following repository:  
+> https://github.com/praha-inc/action-restrict-pr-label
+
 # action-restrict-pr-label
 
 [![license](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/agaroot-technologies/action-restrict-pr-label/blob/main/LICENSE)
